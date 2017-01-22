@@ -2,6 +2,8 @@ package net.slipp.web;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ import net.slipp.utils.HttpSessionUtils;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -32,11 +35,11 @@ public class UserController {
 		User user = userRepository.findByUserId(userId);
 		
 		if (user == null || !user.matchPassword(password)) {
-			System.out.println("Login Failure!");
+			log.debug("Login Failure!");
 			return "redirect:/users/loginForm";
 		}
 		
-		System.out.println("Login Success!");
+		log.debug("Login Success!");
 		session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 		
 		return "redirect:/";
@@ -57,7 +60,7 @@ public class UserController {
 	
 	@PostMapping("")
 	public String create(User user) {
-		System.out.println("user : " + user);
+		log.debug("user : {}", user);
 		userRepository.save(user);
 		return "redirect:/users";
 	}
