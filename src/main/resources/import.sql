@@ -1,0 +1,1 @@
+insert into user (id, user_id, password, name, email) values (1, 'javajigi', 'test', 'jae sung', '');
