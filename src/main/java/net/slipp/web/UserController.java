@@ -2,8 +2,6 @@ package net.slipp.web;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,12 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.slipp.domain.User;
 import net.slipp.domain.UserRepository;
-import net.slipp.utils.HttpSessionUtils;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
-	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -34,12 +30,17 @@ public class UserController {
 	public String login(String userId, String password, HttpSession session) {
 		User user = userRepository.findByUserId(userId);
 		
-		if (user == null || !user.matchPassword(password)) {
-			log.debug("Login Failure!");
+		if (user == null) {
+			System.out.println("Login Failure!");
 			return "redirect:/users/loginForm";
 		}
 		
-		log.debug("Login Success!");
+		if (!user.matchPassword(password)) {
+			System.out.println("Login Failure!");
+			return "redirect:/users/loginForm";
+		}
+		
+		System.out.println("Login Success!");
 		session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 		
 		return "redirect:/";
@@ -60,7 +61,7 @@ public class UserController {
 	
 	@PostMapping("")
 	public String create(User user) {
-		log.debug("user : {}", user);
+		System.out.println("user : " + user);
 		userRepository.save(user);
 		return "redirect:/users";
 	}
@@ -73,7 +74,7 @@ public class UserController {
 	
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
+		if (HttpSessionUtils.isLoginUser(session)) {
 			return "redirect:/users/loginForm";
 		}
 		
@@ -89,7 +90,7 @@ public class UserController {
 	
 	@PutMapping("/{id}")
 	public String update(@PathVariable Long id, User updatedUser, HttpSession session) {
-		if (!HttpSessionUtils.isLoginUser(session)) {
+		if (HttpSessionUtils.isLoginUser(session)) {
 			return "redirect:/users/loginForm";
 		}
 		

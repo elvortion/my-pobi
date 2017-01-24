@@ -1,4 +1,4 @@
-package net.slipp.utils;
+package net.slipp.web;
 
 import javax.servlet.http.HttpSession;
 
@@ -8,7 +8,11 @@ public class HttpSessionUtils {
 	public static final String USER_SESSION_KEY = "sessionedUser";
 	
 	public static boolean isLoginUser(HttpSession session) {
-		return session.getAttribute(USER_SESSION_KEY) != null;
+		Object sessionedUser = session.getAttribute(USER_SESSION_KEY);
+		if (sessionedUser == null) {
+			return false;
+		}
+		return true;
 	}
 	
 	public static User getUserFromSession(HttpSession session) {

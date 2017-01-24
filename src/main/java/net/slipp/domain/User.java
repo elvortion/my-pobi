@@ -7,28 +7,24 @@ import javax.persistence.Id;
 
 @Entity
 public class User {
-	@Id @GeneratedValue
-	private long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 	
-	@Column(length = 15, nullable = false, unique = true)
+	@Column(nullable=false, length=20, unique=true)
 	private String userId;
-	
 	private String password;
-	
 	private String name;
-	
 	private String email;
 	
-	public User() {
+	public boolean matchId(Long newId) {
+		if (newId == null) {
+			return false;
+		}
+		
+		return newId.equals(id);
 	}
-	
-	public User(String userId, String password, String name, String email) {
-		this.userId = userId;
-		this.password = password;
-		this.name = name;
-		this.email = email;
-	}
-	
+
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
@@ -41,10 +37,14 @@ public class User {
 		this.password = password;
 	}
 	
-	public String getPassword() {
-		return password;
+	public boolean matchPassword(String newPassword) {
+		if (newPassword == null) {
+			return false;
+		}
+		
+		return newPassword.equals(password);
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -52,25 +52,41 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	public boolean matchPassword(String password) {
-		return this.password.equals(password);
-	}
 
-	public void update(User user) {
-		if(matchPassword(user.password)) {
-			this.name = user.name;
-			this.email = user.email;
-		}
+	public void update(User newUser) {
+		this.password = newUser.password;
+		this.name = newUser.name;
+		this.email = newUser.email;
 	}
 	
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", name=" + name + ", email=" + email + "]";
+		return "User [id=" + id + ", userId=" + userId + ", password=" + password + ", name=" + name + ", email="
+				+ email + "]";
 	}
-
-	public boolean matchId(long id) {
-		return this.id == id;
-	}
-
 }
