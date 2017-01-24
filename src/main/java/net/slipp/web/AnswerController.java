@@ -27,7 +27,7 @@ public class AnswerController {
 	@PostMapping("")
 	public String create(@PathVariable Long questionId, String contents, HttpSession session) {
 		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "/users/loginForm";
+			return "redirect:/users/loginForm";
 		}
 		
 		User loginUser = HttpSessionUtils.getUserFromSession(session);
@@ -40,7 +40,7 @@ public class AnswerController {
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
 		if (!HttpSessionUtils.isLoginUser(session)) {
-			return "/users/loginForm";
+			return "redirect:/users/loginForm";
 		}
 		User loginUser = HttpSessionUtils.getUserFromSession(session);
 		Answer answer = answerRepository.findOne(id);
