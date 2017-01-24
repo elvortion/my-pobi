@@ -5,30 +5,50 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class User {
 	@Id
 	@GeneratedValue
 	private Long id;
-	
-	@Column(nullable=false, length=20, unique=true)
+
+	@Column(nullable = false, length = 20, unique = true)
 	private String userId;
+	
+	@JsonIgnore
 	private String password;
 	private String name;
 	private String email;
-	
+
 	public boolean matchId(Long newId) {
 		if (newId == null) {
 			return false;
 		}
-		
+
 		return newId.equals(id);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
 	public String getUserId() {
 		return userId;
 	}
@@ -36,15 +56,15 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public boolean matchPassword(String newPassword) {
 		if (newPassword == null) {
 			return false;
 		}
-		
+
 		return newPassword.equals(password);
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -58,7 +78,7 @@ public class User {
 		this.name = newUser.name;
 		this.email = newUser.email;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
