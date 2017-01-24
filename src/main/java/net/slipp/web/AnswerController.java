@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,21 @@ public class AnswerController {
 		Question question = questionRepository.findOne(questionId);
 		Answer answer = new Answer(loginUser, question, contents);
 		answerRepository.save(answer);
+		return String.format("redirect:/questions/%d", questionId);
+	}
+	
+	@DeleteMapping("/{id}")
+	public String delete(@PathVariable Long questionId, @PathVariable Long id, HttpSession session) {
+		if (!HttpSessionUtils.isLoginUser(session)) {
+			return "/users/loginForm";
+		}
+		User loginUser = HttpSessionUtils.getUserFromSession(session);
+		Answer answer = answerRepository.findOne(id);
+		if (!answer.isSameWriter(loginUser)) {
+			throw new IllegalStateException("다른 사용자의 답변을 삭제할 수 없습니다.");
+		}
+		
+		answerRepository.delete(answer);
 		return String.format("redirect:/questions/%d", questionId);
 	}
 }

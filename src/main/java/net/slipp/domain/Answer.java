@@ -49,6 +49,10 @@ public class Answer {
 	public Long getId() {
 		return id;
 	}
+	
+	public boolean isSameWriter(User loginUser) {
+		return writer.equals(loginUser);
+	}
 
 	public User getWriter() {
 		return writer;
