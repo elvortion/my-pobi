@@ -39,6 +39,7 @@ public class Question {
 	@Column(name = "create_date", nullable = false, updatable = false)
 	private Date createDate;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="question")
 	@OrderBy("id ASC")
 	private List<Answer> answers;
@@ -72,7 +73,6 @@ public class Question {
 		return createDate;
 	}
 
-	@JsonIgnore
 	public List<Answer> getAnswers() {
 		return answers;
 	}
